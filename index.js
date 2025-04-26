@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json());
+
 let contactList = [
   {
     id: 1,
@@ -31,7 +33,7 @@ app.get("/api/persons", (request, response) => {
 app.get("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
   const contact = contactList.find((c) => c.id === id);
-  // console.log(contact);
+
   if (contact) {
     response.json(contact);
   } else {
@@ -43,6 +45,23 @@ app.delete("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
   contactList = contactList.filter((c) => c.id !== id);
   response.status(204).end();
+});
+
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+
+  if (body.name && body.number) {
+    const id = Math.round(Math.random() * 10000);
+    const newContact = {
+      id: id,
+      name: body.name,
+      number: body.number,
+    };
+    contactList.push(newContact);
+    response.json(newContact);
+  } else {
+    return response.status(400).json({ error: "content missing" });
+  }
 });
 
 app.get("/info", (request, response) => {
