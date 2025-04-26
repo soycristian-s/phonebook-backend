@@ -51,6 +51,10 @@ app.post("/api/persons", (request, response) => {
   const body = request.body;
 
   if (body.name && body.number) {
+    const checkName = !contactList.some((c) => c.name === body.name);
+    if (checkName) {
+      return response.status(400).json({ error: "name must be unique" });
+    }
     const id = Math.round(Math.random() * 10000);
     const newContact = {
       id: id,
@@ -60,7 +64,7 @@ app.post("/api/persons", (request, response) => {
     contactList.push(newContact);
     response.json(newContact);
   } else {
-    return response.status(400).json({ error: "content missing" });
+    return response.status(400).json({ error: "name or number is missing" });
   }
 });
 
