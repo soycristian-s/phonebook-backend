@@ -28,7 +28,13 @@ app.get("/api/persons", (request, response) => {
   response.json(contactList);
 });
 
-const PORT = 3001
+app.get("/info", (request, response) => {
+  const fechaActual = new Date().toUTCString();
+  response.send(`<p>Phonebook has info for ${contactList.length} people<p>
+    <p>${fechaActual}<p>`);
+});
+
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
