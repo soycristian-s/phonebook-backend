@@ -28,6 +28,17 @@ app.get("/api/persons", (request, response) => {
   response.json(contactList);
 });
 
+app.get("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id);
+  const contact = contactList.find((c) => c.id === id);
+  // console.log(contact);
+  if (contact) {
+    response.json(contact);
+  } else {
+    response.status(404).end()
+  }
+});
+
 app.get("/info", (request, response) => {
   const fechaActual = new Date().toUTCString();
   response.send(`<p>Phonebook has info for ${contactList.length} people<p>
