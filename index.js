@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-const contactList = [
+let contactList = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -35,8 +35,14 @@ app.get("/api/persons/:id", (request, response) => {
   if (contact) {
     response.json(contact);
   } else {
-    response.status(404).end()
+    response.status(404).end();
   }
+});
+
+app.delete("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id);
+  contactList = contactList.filter((c) => c.id !== id);
+  response.status(204).end();
 });
 
 app.get("/info", (request, response) => {
