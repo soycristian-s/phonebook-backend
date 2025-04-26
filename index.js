@@ -6,10 +6,15 @@ app.use(express.json());
 app.use(morgan("tiny"));
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
+  response.status(404).send({ error: "unknown endpoint" });
+};
+morgan.token("body", (req, res) =>
+  req.method === "POST" ? JSON.stringify(req.body) : ""
+);
 
-app.use(unknownEndpoint)
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
 
 let contactList = [
   {
@@ -59,7 +64,7 @@ app.post("/api/persons", (request, response) => {
   const body = request.body;
 
   if (body.name && body.number) {
-    const checkName = !contactList.some((c) => c.name === body.name);
+    const checkName = contactList.some((c) => c.name === body.name);
     if (checkName) {
       return response.status(400).json({ error: "name must be unique" });
     }
@@ -81,6 +86,8 @@ app.get("/info", (request, response) => {
   response.send(`<p>Phonebook has info for ${contactList.length} people<p>
     <p>${fechaActual}<p>`);
 });
+
+app.use(unknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
